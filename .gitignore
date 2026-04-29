@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environment
+myenv/
+.venv/
+env/
+
+# Trained models & artifacts
+*.pkl
+*.threshold
+
+# Data files
+*.csv
+
+# SHAP output images
+shap_test/
+shap_agent/
+predictions_shap/
+
+# Distribution / build
+dist/
+build/
+*.egg-info/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

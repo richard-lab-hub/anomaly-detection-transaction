@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "credit-risk"
+version = "0.1.0"
+description = "IEEE AI Credit Risk — fraud detection pipeline with XGBoost, SHAP, and MCP agent"
+requires-python = ">=3.10"
+dependencies = [
+    "xgboost>=2.0.0",
+    "scikit-learn>=1.3.0",
+    "imbalanced-learn>=0.11.0",
+    "shap>=0.44.0",
+    "joblib>=1.3.0",
+    "pandas>=2.0.0",
+    "numpy>=1.24.0",
+    "matplotlib>=3.7.0",
+    "mcp[cli]>=1.0.0",
+    "ollama>=0.3.0",
+]
+
+[project.scripts]
+credit-risk-train    = "credit_risk.pipeline.train:main"
+credit-risk-evaluate = "credit_risk.pipeline.evaluate:main"
+credit-risk-predict  = "credit_risk.pipeline.predict:main"
+credit-risk-server   = "credit_risk.server.mcp_server:main"
+credit-risk-agent    = "credit_risk.agent.agent:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["credit_risk*"]
