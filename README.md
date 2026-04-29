@@ -28,6 +28,92 @@ ollama pull qwen2.5:7b
 
 ---
 
+## Quick Start — Run the Full Pipeline
+
+All commands run from the **project root** (the folder that contains `credit_risk/`).
+
+```bash
+cd /path/to/IEEEAICreditRiskProject
+source myenv/bin/activate          # activate your virtual environment
+```
+
+### Step 1 — Train
+
+```bash
+# Split data (60/10/30) and train XGBoost — full grid search (~30-90 min)
+python -m credit_risk.pipeline.train --data_dir .
+
+# Fast mode: one-combo grid search (~5 min) — good for a first check
+python -m credit_risk.pipeline.train --data_dir . --fast_mode
+
+# Retrain without re-splitting (reuse existing CSVs)
+python -m credit_risk.pipeline.train --data_dir . --skip_split --fast_mode
+
+# Train Random Forest instead (CPU only, no GPU required)
+python -m credit_risk.pipeline.train --data_dir . --model rf
+```
+
+Produces:
+- `anomaly_pipeline_xgboost.pkl` — trained pipeline
+- `anomaly_pipeline_xgboost.threshold` — optimal F2 threshold from validation
+
+### Step 2 — Evaluate
+
+```bash
+# Evaluate on the held-out test set (PR-AUC, precision, recall, confusion matrix)
+python -m credit_risk.pipeline.evaluate --data_dir . --model xgboost
+
+# With SHAP feature importance plots saved to ./shap_test/
+python -m credit_risk.pipeline.evaluate --data_dir . --model xgboost --explain
+```
+
+### Step 3 — Predict on new transactions
+
+```bash
+python -m credit_risk.pipeline.predict \
+  --model_path ./anomaly_pipeline_xgboost.pkl \
+  --input      ./predict_without_target.csv \
+  --output     predictions.csv
+
+# With SHAP waterfall plots for the top 5 flagged rows
+python -m credit_risk.pipeline.predict \
+  --model_path ./anomaly_pipeline_xgboost.pkl \
+  --input      ./predict_without_target.csv \
+  --output     predictions.csv \
+  --explain --n_explain 5
+```
+
+### Step 4 — AI Agent (natural language, requires MCP server)
+
+Open **three terminals**, all with the virtual environment activated.
+
+**Terminal 1 — MCP server** (keep running):
+```bash
+source myenv/bin/activate
+python -m credit_risk.server.mcp_server
+# → listening on http://localhost:8000
+```
+
+**Terminal 2 — Ollama** (keep running, skip if already started):
+```bash
+source myenv/bin/activate
+ollama serve
+```
+
+**Terminal 3 — send queries**:
+```bash
+source myenv/bin/activate
+
+python -m credit_risk.agent.agent --query "Split the dataset and train XGBoost in fast mode"
+python -m credit_risk.agent.agent  --query "Evaluate the XGBoost model on the test set"
+python -m credit_risk.agent.agent  --query "Score transactions in predict_without_target.csv using XGBoost"
+python -m credit_risk.agent.agent --query "Explain the model and show the top 10 most important features"
+```
+
+> All three entry points (`credit-risk-train`, `python -m credit_risk.pipeline.train`, `python train.py`) are equivalent — use whichever you prefer.
+
+---
+
 ## Package Structure
 
 The project is now a proper Python package (`credit_risk/`). All logic lives inside it; the root `.py` files are thin backward-compatible wrappers.
