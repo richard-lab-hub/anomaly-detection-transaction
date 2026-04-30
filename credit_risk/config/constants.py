@@ -1,20 +1,17 @@
 import argparse
-
-TRAIN_FILE   = 'train_split.csv'
-VAL_FILE     = 'val_split.csv'
-TEST_FILE    = 'test_split.csv'
-SOURCE_FILE  = 'train_with_features_target.csv'
-MODEL_PREFIX = 'anomaly_pipeline'
+from credit_risk.config.loader import load_config
 
 
 def get_paths(data_dir, model_name):
+    files = load_config(model_name)['files']
+    prefix = files['model_prefix']
     return {
-        'train':     f'{data_dir}/{TRAIN_FILE}',
-        'val':       f'{data_dir}/{VAL_FILE}',
-        'test':      f'{data_dir}/{TEST_FILE}',
-        'source':    f'{data_dir}/{SOURCE_FILE}',
-        'model':     f'{data_dir}/{MODEL_PREFIX}_{model_name}.pkl',
-        'threshold': f'{data_dir}/{MODEL_PREFIX}_{model_name}.threshold',
+        'train':     f"{data_dir}/{files['train']}",
+        'val':       f"{data_dir}/{files['val']}",
+        'test':      f"{data_dir}/{files['test']}",
+        'source':    f"{data_dir}/{files['source']}",
+        'model':     f"{data_dir}/{prefix}_{model_name}.pkl",
+        'threshold': f"{data_dir}/{prefix}_{model_name}.threshold",
     }
 
 

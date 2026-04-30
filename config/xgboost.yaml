@@ -1,0 +1,167 @@
+files:
+  train: train_split.csv
+  val: val_split.csv
+  test: test_split.csv
+  source: train_with_features_target.csv
+  model_prefix: anomaly_pipeline
+
+features:
+  selected:
+    - TransactionDT
+    - TransactionAmt
+    - C1
+    - C2
+    - C4
+    - C6
+    - C7
+    - C8
+    - C10
+    - C11
+    - C12
+    - C13
+    - C14
+    - D1
+    - D2
+    - D4
+    - D8
+    - D10
+    - D15
+    - V44
+    - V45
+    - V53
+    - V62
+    - V86
+    - V87
+    - V127
+    - V128
+    - V149
+    - V156
+    - V187
+    - V188
+    - V189
+    - V199
+    - V200
+    - V201
+    - V242
+    - V243
+    - V244
+    - V246
+    - V257
+    - V258
+    - V280
+    - V282
+    - V283
+    - V294
+    - V306
+    - V307
+    - V308
+    - V310
+    - V312
+    - V315
+    - V317
+    - id_02
+    - id_19
+    - id_20
+    - id_31
+    - DeviceInfo
+    - P_emaildomain
+    - R_emaildomain
+    - card1
+    - card2
+    - card3
+    - card5
+    - card6
+    - addr1
+    - M4
+
+  numerical:
+    - TransactionDT
+    - TransactionAmt
+    - C1
+    - C2
+    - C4
+    - C6
+    - C7
+    - C8
+    - C10
+    - C11
+    - C12
+    - C13
+    - C14
+    - D1
+    - D2
+    - D4
+    - D8
+    - D10
+    - D15
+    - V44
+    - V45
+    - V53
+    - V62
+    - V86
+    - V87
+    - V127
+    - V128
+    - V149
+    - V156
+    - V187
+    - V188
+    - V189
+    - V199
+    - V200
+    - V201
+    - V242
+    - V243
+    - V244
+    - V246
+    - V257
+    - V258
+    - V280
+    - V282
+    - V283
+    - V294
+    - V306
+    - V307
+    - V308
+    - V310
+    - V312
+    - V315
+    - V317
+    - id_02
+
+  categorical:
+    - id_19
+    - id_20
+    - id_31
+    - DeviceInfo
+    - P_emaildomain
+    - R_emaildomain
+    - card1
+    - card2
+    - card3
+    - card5
+    - card6
+    - addr1
+    - M4
+
+model:
+  class: xgboost
+  params:
+    eval_metric: auc
+    tree_method: hist
+    device: cuda
+    random_state: 42
+
+param_grid:
+  model__n_estimators: [500, 800]
+  model__max_depth: [4, 6, 8]
+  model__learning_rate: [0.05, 0.1]
+  model__subsample: [0.8, 1.0]
+  model__colsample_bytree: [0.8, 1.0]
+
+fast_grid:
+  model__n_estimators: [300]
+  model__max_depth: [6]
+  model__learning_rate: [0.1]
+  model__subsample: [0.8]
+  model__colsample_bytree: [0.8]

@@ -105,12 +105,65 @@ ollama serve
 source myenv/bin/activate
 
 python -m credit_risk.agent.agent --query "Split the dataset and train XGBoost in fast mode"
-python -m credit_risk.agent.agent  --query "Evaluate the XGBoost model on the test set"
-python -m credit_risk.agent.agent  --query "Score transactions in predict_without_target.csv using XGBoost"
-python -m credit_risk.agent.agent --query "Explain the model and show the top 10 most important features"
+python -m credit_risk.agent.agent --query "Evaluate the XGBoost model on the test set"
+python -m credit_risk.agent.agent --query "What is the ROC-AUC of the XGBoost model?"
+python -m credit_risk.agent.agent --query "Show the confusion matrix and anomaly precision/recall for XGBoost"
+python -m credit_risk.agent.agent --query "Score transactions in predict_without_target.csv using XGBoost"
+python -m credit_risk.agent.agent --query "Evaluate and explain using XGBoost and SHAP"
+python -m credit_risk.agent.agent --query "Score predict_without_target.csv with a threshold of 0.3"
 ```
 
 > All three entry points (`credit-risk-train`, `python -m credit_risk.pipeline.train`, `python train.py`) are equivalent — use whichever you prefer.
+
+---
+
+## Running Tests
+
+All commands run from the **project root**.
+
+```bash
+# Run the full test suite (unit + integration)
+python -m pytest
+
+# Unit tests only (~2 s)
+python -m pytest tests/unit/
+
+# Integration tests only (~15 s — trains a small model)
+python -m pytest tests/integration/
+
+# Single file
+python -m pytest tests/unit/test_factory.py
+
+# Single test by name
+python -m pytest tests/unit/test_factory.py::test_unknown_model_class_raises_value_error
+```
+
+**Useful flags:**
+
+| Flag | Effect |
+|---|---|
+| `-v` | Verbose — prints every test name |
+| `-x` | Stop on the first failure |
+| `--tb=short` | Shorter tracebacks on failure |
+| `-q` | Quiet — minimal output |
+
+Every run automatically prints a coverage table (configured in `pytest.ini`). The integration tests train a real XGBoost model on synthetic data, so they take longer than the unit tests.
+
+```
+tests/
+├── unit/
+│   ├── test_config_constants.py   # get_paths, base_parser
+│   ├── test_config_loader.py      # load_config, caching, YAML structure
+│   ├── test_factory.py            # get_model_and_grid (XGBoost / RF)
+│   ├── test_features.py           # feature list counts and disjointness
+│   ├── test_log.py                # JSON logger output
+│   └── test_preprocessing.py     # log transform, imputer, build_preprocessor
+└── integration/
+    ├── test_split.py              # split_and_save — file creation, row counts, stratification
+    ├── test_train.py              # train() — pkl output, threshold JSON, RF path, edge cases
+    ├── test_evaluate.py           # test() — metrics structure and ranges
+    └── test_predict.py            # predict() — output CSV, threshold, edge cases
+```
 
 ---
 

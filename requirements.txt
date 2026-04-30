@@ -11,3 +11,10 @@ matplotlib>=3.7.0
 # ── New: MCP server + AI agent ────────────────────────────────────────────────
 mcp[cli]>=1.0.0      # MCP protocol — server (FastMCP) and client (SSE)
 ollama>=0.3.0        # Ollama Python client for local LLM tool calling
+
+# ── Config ────────────────────────────────────────────────────────────────────
+pyyaml>=6.0          # YAML config files (config/xgboost.yaml, config/rf.yaml)
+
+# ── Testing ───────────────────────────────────────────────────────────────────
+pytest>=7.4
+pytest-cov>=4.1

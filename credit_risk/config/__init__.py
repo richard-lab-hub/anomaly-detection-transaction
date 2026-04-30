@@ -4,11 +4,6 @@ from credit_risk.config.features import (
     categorical_features,
 )
 from credit_risk.config.constants import (
-    TRAIN_FILE,
-    VAL_FILE,
-    TEST_FILE,
-    SOURCE_FILE,
-    MODEL_PREFIX,
     get_paths,
     base_parser,
 )
