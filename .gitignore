@@ -12,7 +12,7 @@ env/
 # Trained models & artifacts
 
 # Data files
-*.csv
+
 
 # SHAP output images
 shap_test/
