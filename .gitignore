@@ -10,7 +10,6 @@ myenv/
 env/
 
 # Trained models & artifacts
-*.pkl
 *.threshold
 
 # Data files
