@@ -266,7 +266,9 @@ Outputs: PR-AUC, classification report (precision / recall / F1), confusion matr
 <img src="results/shap_result.png" alt="Train credit risk" width="400">
 
 ### Query response: XGBoost fast mode SHAP graphs
-<img src="shap_test/shap_test_bar_xgboost.png" alt="Train credit risk" width="400">
+<img src="results/shap_test_bar_xgboost.png" alt="Train credit risk" width="400">
+
+<img src="results/shap_test_beeswarm_xgboost.png" alt="Train credit risk" width="400">
 
 ### Stage 3 — Predict
 
