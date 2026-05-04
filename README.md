@@ -6,7 +6,7 @@
 ![SHAP](https://img.shields.io/badge/Explainability-SHAP-purple)
 ![MCP](https://img.shields.io/badge/Agent-MCP%20%2B%20Ollama-teal)
 
-An end-to-end, production-grade fraud detection system built on the [IEEE-CIS Fraud Detection Dataset](https://www.kaggle.com/datasets/melodyyiphoiching/remote-working-survey/data) (~590K transactions). Covers the full MLOps lifecycle: feature engineering → model training → threshold optimisation → explainability → AI-agent-driven inference via a local LLM and MCP server. Feature engineering was obtained by [IEEE Fraud Feature Selection (RFECV)](https://www.kaggle.com/code/pavelvpster/ieee-fraud-feature-selection-rfecv/notebook).
+An end-to-end, production-grade fraud detection system built on the [IEEE-CIS Fraud Detection Dataset](https://www.kaggle.com/competitions/ieee-fraud-detection/data) (~590K transactions). Covers the full MLOps lifecycle: feature engineering → model training → threshold optimisation → explainability → AI-agent-driven inference via a local LLM and MCP server. Feature engineering was obtained by [IEEE Fraud Feature Selection (RFECV)](https://www.kaggle.com/code/pavelvpster/ieee-fraud-feature-selection-rfecv/notebook).
 
 ---
 
@@ -231,7 +231,11 @@ Produces:
 - `anomaly_pipeline_<model>.pkl` — trained pipeline
 - `anomaly_pipeline_<model>.threshold` — optimal F2 threshold from validation
 
+### Query response: XGBoost fast mode
+<img src="results/train_result.png" alt="Train credit risk" width="800">
 ---
+
+
 
 ### Stage 2 — Evaluate
 
@@ -256,7 +260,15 @@ python -m credit_risk.pipeline.evaluate --data_dir . --model xgboost --explain -
 
 Outputs: PR-AUC, classification report (precision / recall / F1), confusion matrix.
 
----
+### Query response: XGBoost fast mode evaluation
+<img src="results/evaluate_result.png" alt="Train credit risk" width="400">
+
+<img src="results/shap_result.png" alt="Train credit risk" width="400">
+
+### Query response: XGBoost fast mode SHAP graphs
+<img src="shap_test/shap_test_bar_xgboost.png" alt="Train credit risk" width="400">
+
+<img src="shap_test/shap_test_beeswarm_xgboost.png" alt="Train credit risk" width="400">
 
 ### Stage 3 — Predict
 
@@ -336,9 +348,11 @@ python -m credit_risk.agent.agent --query "Score transactions in predict_without
 python -m credit_risk.agent.agent --query "Score predict_without_target.csv with a threshold of 0.3"
 ```
 
----
+### Agent response: XGBoost model on the test set
+<img src="results/agent_xboost_result.png" alt="Train credit risk" width="800">
 
-
+### Agent response: XGBoost model explainability
+<img src="results/agent_xboost_result_shap.png" alt="Train credit risk" width="800">
 
 ---
 
