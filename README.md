@@ -20,7 +20,7 @@ This system addresses that directly:
 |---|---|
 | **Fewer missed frauds** | F2-score threshold optimisation weights recall 2× over precision, so the model is tuned to catch fraud first — not just maximise accuracy |
 | **Lower false-positive rate** | Adjustable decision threshold lets risk teams dial between aggressive fraud capture and customer experience without retraining the model |
-| **Regulatory compliance** | Per-transaction SHAP waterfall plots provide a ranked, human-readable explanation for every flag — satisfying SR 11-7 and GDPR Article 22 requirements for explainable automated decisions |
+| **Regulatory compliance** | Per-transaction SHAP waterfall plots provide a ranked, human-readable explanation for explainable automated decisions |
 | **Faster analyst workflows** | Plain-English queries via the AI agent replace manual script execution — fraud analysts get answers without needing to touch code |
 | **Data stays on-premises** | The AI agent runs on a local `qwen2.5:7b` LLM with no cloud API calls, ensuring sensitive transaction data never leaves the institution's environment |
 | **Rapid deployment** | A single CLI command covers ingestion → preprocessing → training → evaluation → scoring, reducing model deployment time from weeks to hours |
