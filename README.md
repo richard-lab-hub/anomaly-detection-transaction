@@ -171,10 +171,8 @@ docker --version && docker compose version
 
 ```bash
 # 1. Get the code and the data
-git lfs install
-git clone <repo-url>
-cd IEEEAICreditRiskProject
-git lfs pull
+sudo apt install git-lfs
+git-lfs pull
 
 # 2. Start the background services (Ollama + MCP server)
 docker compose up -d
