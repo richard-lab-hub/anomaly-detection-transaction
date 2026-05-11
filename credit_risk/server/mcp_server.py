@@ -32,7 +32,7 @@ from credit_risk.pipeline.train import train
 from credit_risk.pipeline.evaluate import test, run_shap
 from credit_risk.pipeline.predict import predict
 
-mcp = FastMCP("Anomaly Detection Pipeline")
+mcp = FastMCP("Anomaly Detection Pipeline", host="0.0.0.0", port=8000)
 
 # Project root: two levels up from this file (credit_risk/server/mcp_server.py)
 DEFAULT_DATA_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -245,7 +245,7 @@ def list_models(data_dir: str = DEFAULT_DATA_DIR) -> str:
 # ── Entry point ───────────────────────────────────────────────────────────────
 
 def main():
-    mcp.run(transport='sse')   # runs on http://localhost:8000 — agent.py connects here
+    mcp.run(transport='sse')   # host/port set in FastMCP() above so DNS-rebinding protection isn't auto-enabled
 
 
 if __name__ == '__main__':

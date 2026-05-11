@@ -1,5 +1,5 @@
 {
-  "threshold": 0.706248,
-  "val_f2": 0.6529,
-  "val_pr_auc": 0.687
+  "threshold": 0.648414,
+  "val_f2": 0.6462,
+  "val_pr_auc": 0.6804
 }

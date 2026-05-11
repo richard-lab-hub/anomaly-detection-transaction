@@ -30,8 +30,8 @@ from mcp.client.sse import sse_client
 # ── Constants ─────────────────────────────────────────────────────────────────
 
 MAXIMUM_ITERATIONS   = 15
-DEFAULT_MODEL    = 'qwen2.5:7b'
-DEFAULT_MCP_URL  = 'http://localhost:8000/sse'
+DEFAULT_MODEL    = os.environ.get('OLLAMA_MODEL', 'qwen2.5:3b')
+DEFAULT_MCP_URL  = os.environ.get('MCP_URL', 'http://localhost:8000/sse')
 # Project root: two levels up from this file (credit_risk/agent/agent.py)
 DEFAULT_DATA_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 

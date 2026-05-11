@@ -117,7 +117,120 @@ This system addresses that directly:
 
 ---
 
+## Run with Docker (no Python install)
+
+If you'd rather not install Python, Ollama, or any Python packages, the project ships with a Docker setup that handles everything. The only tools required on the host machine are **Docker** and **git lfs**.
+
+### Prerequisites
+
+The Docker workflow needs only two things on the host machine:
+
+| Tool | Purpose | Verify |
+|---|---|---|
+| **Docker** (with Compose v2) | Runs Ollama, the MCP server, and the project shell as containers | `docker --version && docker compose version` |
+| **git lfs** | Pulls the model `.pkl` and the IEEE dataset CSVs (tracked via Git LFS) | `git lfs version` |
+
+No Python, no Ollama, no CUDA driver, and no Python packages are required on the host — everything ships inside the container images.
+
+#### System requirements
+
+| Resource    | Minimum            | Comfortable         |
+| ----------- | ------------------ | ------------------- |
+| RAM         | 8 GB               | 16 GB               |
+| Disk free   | 10 GB              | 20 GB               |
+| CPU         | x86_64 or ARM64    | Same                |
+| GPU         | Not required       | NVIDIA optional     |
+| OS          | Linux / macOS / Windows (with WSL2) | Same |
+| Network     | Internet on first run | Same             |
+
+The default agent LLM is `qwen2.5:3b` (~2 GB), chosen so the project runs on 8 GB laptops. To use the larger `qwen2.5:7b`, set `OLLAMA_MODEL=qwen2.5:7b` before `docker compose up`.
+
+#### Install Docker (one-time)
+
+**Linux (Ubuntu / Debian / most distros)**
+```bash
+curl -fsSL https://get.docker.com | sh
+sudo usermod -aG docker $USER
+sudo systemctl enable --now docker
+# log out and back in (or run `newgrp docker`)
+docker --version && docker compose version
+```
+
+**macOS**
+```bash
+# Homebrew route (recommended)
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+brew install --cask docker
+open -a Docker
+docker --version && docker compose version
+```
+
+**Windows** — install Docker Desktop from <https://www.docker.com/products/docker-desktop>; it sets up WSL2 integration automatically.
+
+### Run the project
+
+```bash
+# 1. Get the code and the data
+git lfs install
+git clone <repo-url>
+cd IEEEAICreditRiskProject
+git lfs pull
+
+# 2. Start the background services (Ollama + MCP server)
+docker compose up -d
+```
+
+When you're done:
+```bash
+docker compose down  # stop Ollama + MCP
+```
+
+The pulled Ollama models persist in the `ollama-data` named volume, so subsequent `docker compose up` calls are fast.
+
+### MCP Server (Docker)
+
+The `docker compose up -d` step in [Run the project](#run-the-project) already starts the MCP server as a long-running container — there is no separate command to run. The server listens on the Compose network at `http://mcp:8000/sse`, which the `agent` service picks up via the `MCP_URL` environment variable.
+
+```bash
+# Confirm the MCP server is up
+docker compose ps mcp
+
+# Tail the server logs (Ctrl-C to stop following)
+docker compose logs -f mcp
+
+# Restart only the MCP server (e.g. after editing credit_risk/server/mcp_server.py)
+docker compose restart mcp
+
+# Run the server in the foreground for debugging (Ctrl-C to stop)
+docker compose run --rm --service-ports mcp
+```
+
+### AI Agent (Docker)
+
+Run any agent query through the `agent` service — the MCP server and Ollama are already running from `docker compose up -d`. The `agent` service sits behind the `agent` profile so it only runs on demand, and its entrypoint is already `python -m credit_risk.agent.agent`, so anything after `agent` on the command line is forwarded as CLI arguments.
+
+```bash
+# Train
+docker compose --profile agent run --rm agent --query "Split the dataset and train XGBoost in fast mode"
+
+# Evaluate
+docker compose --profile agent run --rm agent --query "Evaluate the XGBoost model on the test set"
+
+docker compose --profile agent run --rm agent --query "Show the confusion matrix and anomaly precision/recall for XGBoost"
+
+docker compose --profile agent run --rm agent --query "Explain the XGBoost model and show the top 10 most important features"
+
+# Predict
+docker compose --profile agent run --rm agent --query "Score transactions in predict_without_target.csv using XGBoost"
+
+docker compose --profile agent run --rm agent --query "Score predict_without_target.csv with a threshold of 0.3"
+```
+
+---
+
 ## Prerequisites
+
+> The steps below are only needed if you're running the project natively (without Docker). If you used the Docker workflow above, you can skip ahead to [Pipeline](#pipeline).
 
 ### 1. Create and activate a Python virtual environment
 

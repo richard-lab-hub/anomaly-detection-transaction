@@ -1,0 +1,69 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: credit-risk-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+    healthcheck:
+      test: ["CMD-SHELL", "ollama list >/dev/null 2>&1 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  ollama-pull:
+    image: ollama/ollama:latest
+    container_name: credit-risk-ollama-pull
+    depends_on:
+      ollama:
+        condition: service_healthy
+    environment:
+      OLLAMA_HOST: http://ollama:11434
+    entrypoint: ["sh", "-c", "ollama pull ${OLLAMA_MODEL:-qwen2.5:3b}"]
+    restart: "no"
+
+  mcp:
+    build:
+      context: .
+    container_name: credit-risk-mcp
+    command: ["python", "-m", "credit_risk.server.mcp_server"]
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    working_dir: /app
+    environment:
+      OLLAMA_HOST: http://ollama:11434
+    depends_on:
+      ollama:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import socket; socket.create_connection(('localhost', 8000), timeout=2)\""]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 10s
+
+  agent:
+    build:
+      context: .
+    container_name: credit-risk-agent
+    profiles: ["agent"]
+    depends_on:
+      mcp:
+        condition: service_healthy
+    environment:
+      OLLAMA_HOST: http://ollama:11434
+      OLLAMA_MODEL: qwen2.5:3b
+      MCP_URL: http://mcp:8000/sse
+    volumes:
+      - .:/app
+    working_dir: /app
+    entrypoint: ["python", "-m", "credit_risk.agent.agent"]
+
+volumes:
+  ollama-data:

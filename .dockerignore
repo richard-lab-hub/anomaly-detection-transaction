@@ -1,0 +1,12 @@
+myenv/
+__pycache__/
+**/__pycache__/
+.pytest_cache/
+.coverage
+.git/
+*.csv
+predictions_shap/
+shap_test/
+results/
+.claude/
+.env
