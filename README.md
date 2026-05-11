@@ -172,7 +172,9 @@ docker --version && docker compose version
 ```bash
 # 1. Get the code and the data
 sudo apt install git-lfs
+git-lfs --version
 git-lfs pull
+
 
 # 2. Start the background services (Ollama + MCP server)
 docker compose up -d
