@@ -119,7 +119,7 @@ This system addresses that directly:
 
 ## Run with Docker (no Python install)
 
-If you'd rather not install Python, Ollama, or any Python packages, the project ships with a Docker setup that handles everything. The only tools required on the host machine are **Docker** and **git lfs**.
+If you'd rather not install Python, Ollama, or any Python packages, the project ships with a Docker setup that handles everything - [video instructions](https://youtu.be/YHke5lFnVgQ). The only tools required on the host machine are **Docker** and **git lfs**.
 
 ### Prerequisites
 
